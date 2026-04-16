@@ -195,5 +195,4 @@ seedData().then(() => {
   console.error('❌ Server start error:', err);
   process.exit(1);
 });
-
 module.exports = app;
