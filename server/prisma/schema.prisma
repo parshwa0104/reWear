@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String       @id @default(uuid())
+  name              String
+  email             String       @unique
+  password          String
+  avatar            String       @default("")
+  location          String       @default("Mumbai, India")
+  rating            Float        @default(4.5)
+  totalEarnings     Float        @default(0)
+  textileWasteSaved Float        @default(0) // in kg
+  outfitsListed     Int          @default(0)
+  totalRentals      Int          @default(0)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  // Relations
+  outfits           Outfit[]     @relation("OutfitOwner")
+  reviewsGiven      Review[]     @relation("ReviewAuthor")
+  bookingsAsRenter  Booking[]    @relation("BookingRenter")
+  bookingsAsOwner   Booking[]    @relation("BookingOwner")
+  messagesSent      Message[]    @relation("MessageSender")
+  messagesReceived  Message[]    @relation("MessageReceiver")
+}
+
+model Outfit {
+  id              String       @id @default(uuid())
+  ownerId         String
+  title           String
+  description     String       @default("")
+  category        String
+  size            String
+  brand           String       @default("Unbranded")
+  condition       String       @default("Good")
+  pricePerDay     Float
+  securityDeposit Float        @default(500)
+  suggestedPrice  Float        @default(0)
+  isAvailable     Boolean      @default(true)
+  location        String       @default("Mumbai, India")
+  totalRentals    Int          @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  
+  // Storing images as a stringified JSON array for SQLite
+  images          String       @default("[]")
+
+  owner           User         @relation("OutfitOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  reviews         Review[]
+  bookings        Booking[]
+  messages        Message[]
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  userName  String
+  outfitId  String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation("ReviewAuthor", fields: [userId], references: [id])
+  outfit    Outfit   @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id            String   @id @default(uuid())
+  outfitId      String
+  renterId      String
+  ownerId       String
+  startDate     DateTime
+  endDate       DateTime
+  totalDays     Int
+  totalPrice    Float
+  depositAmount Float
+  status        String   @default("pending") // pending, confirmed, active, returned, cancelled
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  outfit        Outfit   @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  renter        User     @relation("BookingRenter", fields: [renterId], references: [id])
+  owner         User     @relation("BookingOwner", fields: [ownerId], references: [id])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  senderId  String
+  receiverId String
+  outfitId  String
+  text      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sender    User     @relation("MessageSender", fields: [senderId], references: [id])
+  receiver  User     @relation("MessageReceiver", fields: [receiverId], references: [id])
+  outfit    Outfit   @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+}

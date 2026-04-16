@@ -1,0 +1,79 @@
+.hover\:text-coral:hover { color: var(--accent-coral); }
+.transition-colors { transition: color 0.2s ease; }
+.eco-badge {
+  box-shadow: 0 4px 20px rgba(255,63,108,0.1);
+  background: rgba(255, 63, 108, 0.08);
+  border-color: rgba(255, 63, 108, 0.2);
+  color: #a43a53;
+}
+.mb-0\.5 { margin-bottom: 2px; }
+
+.profile-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.profile-topbar {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top: 12px;
+}
+
+.profile-chip {
+  display: inline-flex;
+  background: rgba(255, 63, 108, 0.1);
+  color: #be2f55;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  font-size: 0.66rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.profile-user-card {
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.profile-stats > div {
+  background: #fff;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  color: var(--accent-green);
+  border-bottom-color: var(--accent-green);
+}
+
+.profile-item-card {
+  background: #fff;
+}
+
+.profile-item-card img {
+  height: 150px;
+}
+
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.col-span-2 { grid-column: span 2; }
+.h-40 { height: 160px; }
+.h-32 { height: 128px; }
+.w-full { width: 100%; }
+.p-sm { padding: var(--space-sm); }
+
+@media (max-width: 760px) {
+  .profile-topbar {
+    padding-top: 6px;
+  }
+}

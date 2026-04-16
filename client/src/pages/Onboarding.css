@@ -1,0 +1,89 @@
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #fff6f3 0%, #fffdfb 55%, #f4eee8 100%);
+}
+
+.onboarding-top-tag {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-size: 0.68rem;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: #b56a54;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.slides-wrapper {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.slide {
+  min-width: 100%;
+  padding: var(--space-2xl) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-icon-container {
+  width: 120px;
+  height: 120px;
+  background: #fff;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-xl);
+}
+
+.slide-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.text-center { text-align: center; }
+.px-md { padding-left: var(--space-md); padding-right: var(--space-md); }
+.mb-md { margin-bottom: var(--space-md); }
+.mt-xl { margin-top: var(--space-xl); }
+.mb-xl { margin-bottom: var(--space-xl); }
+.mt-sm { margin-top: var(--space-sm); }
+.ml-2 { margin-left: 8px; }
+.w-5 { width: 20px; }
+.h-5 { height: 20px; }
+
+.onboarding-controls {
+  padding: var(--space-xl) var(--space-lg);
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 80%, rgba(255, 255, 255, 0));
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--border-light);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+
+.dot.active {
+  width: 24px;
+  background: var(--accent-green);
+  box-shadow: 0 4px 12px var(--accent-green-glow);
+}

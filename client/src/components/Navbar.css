@@ -1,0 +1,124 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 100;
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.nav-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  min-height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 10px var(--space-lg);
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff3f6c, #ff8f3f);
+  box-shadow: 0 0 0 5px rgba(255, 63, 108, 0.12);
+}
+
+.brand-name {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.brand-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-item {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--transition-spring);
+}
+
+.nav-item:hover {
+  border-color: var(--border-light);
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+
+.nav-item.active {
+  color: var(--accent-green);
+  background: var(--accent-green-dim);
+  border-color: rgba(255, 63, 108, 0.22);
+}
+
+.upload-btn {
+  color: var(--text-primary);
+}
+
+@media (max-width: 760px) {
+  .nav-container {
+    min-height: auto;
+    padding: 12px var(--space-md);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .brand-sub {
+    font-size: 0.68rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+}

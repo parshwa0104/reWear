@@ -1,0 +1,41 @@
+.image-upload-zone {
+  height: 200px;
+  border: 2px dashed var(--border-light);
+  border-radius: var(--radius-lg);
+  background: var(--bg-input);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.image-upload-zone:hover {
+  border-color: var(--accent-green);
+  background: rgba(0, 230, 118, 0.05);
+}
+
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.relative { position: relative; }
+
+.suggested-price-chip {
+  position: absolute;
+  right: 12px;
+  top: 36px;
+  background: var(--bg-card);
+  border: 1px solid var(--accent-purple-dim);
+  color: var(--accent-purple);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.text-lg { font-size: 1.125rem; }
+.font-bold { font-weight: 700; }
