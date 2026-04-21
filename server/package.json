@@ -1,22 +1,16 @@
 {
-  "name": "server",
+  "name": "rewear-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "ReWear fashion rental API — in-memory store, no database",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
-    "prisma:generate": "prisma generate --schema prisma/schema.prisma",
-    "prisma:push": "prisma db push --schema prisma/schema.prisma",
-    "postinstall": "npm run prisma:generate",
-    "predev": "npm run prisma:generate && npm run prisma:push",
-    "dev": "npx nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "npx nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "6.19.3",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -26,7 +20,6 @@
     "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14",
-    "prisma": "6.19.3"
+    "nodemon": "^3.1.14"
   }
 }

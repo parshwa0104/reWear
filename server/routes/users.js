@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const prisma = require('../prisma');
+const db = require('../store');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
@@ -9,33 +9,35 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password, location } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Name, email and password are required' });
+    }
 
-    // Check if user exists
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
+    if (db.users.emailExists(email)) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        location: location || 'Mumbai, India'
-      }
+    const user = db.users.create({
+      name,
+      email,
+      password: hashedPassword,
+      avatar: '',
+      location: location || 'Mumbai, India',
+      rating: 4.5,
+      totalEarnings: 0,
+      textileWasteSaved: 0,
+      outfitsListed: 0,
+      totalRentals: 0
     });
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'rewear-secret-key', { expiresIn: '7d' });
 
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
-
-    res.status(201).json({ 
+    res.status(201).json({
       message: 'Account created successfully!',
-      token, 
-      user: userWithoutPassword 
+      token,
+      user: db.users.withoutPassword(user)
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -47,7 +49,7 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = db.users.findByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -57,14 +59,12 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'rewear-secret-key', { expiresIn: '7d' });
 
-    const { password: _, ...userWithoutPassword } = user;
-
-    res.json({ 
+    res.json({
       message: 'Login successful!',
-      token, 
-      user: userWithoutPassword 
+      token,
+      user: db.users.withoutPassword(user)
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -72,50 +72,30 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user profile
-router.get('/me', auth, async (req, res) => {
-  try {
-    const user = await prisma.user.findUnique({ where: { id: req.userId } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    
-    const { password: _, ...userWithoutPassword } = user;
-    res.json(userWithoutPassword);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+router.get('/me', auth, (req, res) => {
+  const user = db.users.findById(req.userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json(db.users.withoutPassword(user));
 });
 
 // Get user by ID (public profile)
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    
-    const { password: _, ...userWithoutPassword } = user;
-    res.json(userWithoutPassword);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+router.get('/:id', (req, res) => {
+  const user = db.users.findById(req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json(db.users.withoutPassword(user));
 });
 
 // Update profile
-router.put('/me', auth, async (req, res) => {
-  try {
-    const allowed = ['name', 'avatar', 'location'];
-    const data = {};
-    allowed.forEach(field => {
-      if (req.body[field] !== undefined) data[field] = req.body[field];
-    });
+router.put('/me', auth, (req, res) => {
+  const allowed = ['name', 'avatar', 'location'];
+  const data = {};
+  allowed.forEach(field => {
+    if (req.body[field] !== undefined) data[field] = req.body[field];
+  });
 
-    const user = await prisma.user.update({
-      where: { id: req.userId },
-      data
-    });
-    
-    const { password: _, ...userWithoutPassword } = user;
-    res.json(userWithoutPassword);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  const updated = db.users.update(req.userId, data);
+  if (!updated) return res.status(404).json({ error: 'User not found' });
+  res.json(db.users.withoutPassword(updated));
 });
 
 module.exports = router;

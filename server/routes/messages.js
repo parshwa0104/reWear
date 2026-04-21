@@ -1,89 +1,58 @@
 const express = require('express');
-const prisma = require('../prisma');
+const db = require('../store');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Send message
-router.post('/', auth, async (req, res) => {
+// ─── POST /api/messages ───────────────────────────────────────────────────────
+router.post('/', auth, (req, res) => {
   try {
     const { receiverId, outfitId, text } = req.body;
+    if (!receiverId || !outfitId || !text) {
+      return res.status(400).json({ error: 'receiverId, outfitId and text are required' });
+    }
 
-    const message = await prisma.message.create({
-      data: {
-        senderId: req.userId,
-        receiverId,
-        outfitId,
-        text
-      },
-      include: {
-        sender: { select: { name: true, avatar: true } },
-        receiver: { select: { name: true, avatar: true } }
-      }
+    const message = db.messages.create({
+      senderId: req.userId,
+      receiverId,
+      outfitId,
+      text
     });
 
-    res.status(201).json(message);
+    // Attach sender/receiver info for response
+    const sender = db.users.findById(req.userId);
+    const receiver = db.users.findById(receiverId);
+
+    res.status(201).json({
+      ...message,
+      sender: db.users.withoutPassword(sender),
+      receiver: db.users.withoutPassword(receiver)
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get messages for an outfit conversation between two users
-router.get('/conversation/:outfitId/:otherUserId', auth, async (req, res) => {
+// ─── GET /api/messages/conversation/:outfitId/:otherUserId ───────────────────
+router.get('/conversation/:outfitId/:otherUserId', auth, (req, res) => {
   try {
     const { outfitId, otherUserId } = req.params;
 
-    const messages = await prisma.message.findMany({
-      where: {
-        outfitId,
-        OR: [
-          { senderId: req.userId, receiverId: otherUserId },
-          { senderId: otherUserId, receiverId: req.userId }
-        ]
-      },
-      include: {
-        sender: { select: { name: true, avatar: true } },
-        receiver: { select: { name: true, avatar: true } }
-      },
-      orderBy: { createdAt: 'asc' }
-    });
+    const msgs = db.messages.findConversation(outfitId, req.userId, otherUserId);
 
-    // Mark messages as read
-    await prisma.message.updateMany({
-      where: { outfitId, senderId: otherUserId, receiverId: req.userId, isRead: false },
-      data: { isRead: true }
-    });
+    // Mark messages from otherUser as read
+    db.messages.markRead(outfitId, otherUserId, req.userId);
 
-    res.json(messages);
+    res.json(msgs);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get all chat threads for current user
-router.get('/threads', auth, async (req, res) => {
+// ─── GET /api/messages/threads ────────────────────────────────────────────────
+router.get('/threads', auth, (req, res) => {
   try {
-    const messages = await prisma.message.findMany({
-      where: {
-        OR: [
-          { senderId: req.userId },
-          { receiverId: req.userId }
-        ]
-      },
-      orderBy: { createdAt: 'desc' },
-      distinct: ['outfitId'], // Get only the latest message per outfit thread
-      include: {
-        sender: { select: { name: true, avatar: true } },
-        receiver: { select: { name: true, avatar: true } },
-        outfit: { select: { title: true, images: true } }
-      }
-    });
-
-    const formattedMessages = messages.map(m => ({
-      ...m,
-      outfit: { ...m.outfit, images: JSON.parse(m.outfit.images || "[]") }
-    }));
-
-    res.json(formattedMessages);
+    const threads = db.messages.findThreads(req.userId);
+    res.json(threads);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

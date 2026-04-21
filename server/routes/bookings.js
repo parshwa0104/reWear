@@ -1,140 +1,98 @@
 const express = require('express');
-const prisma = require('../prisma');
+const db = require('../store');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Create booking
-router.post('/', auth, async (req, res) => {
+// ─── POST /api/bookings ───────────────────────────────────────────────────────
+router.post('/', auth, (req, res) => {
   try {
     const { outfitId, startDate, endDate } = req.body;
 
-    const outfit = await prisma.outfit.findUnique({ where: { id: outfitId } });
+    const outfit = db.outfits.findById(outfitId);
     if (!outfit) return res.status(404).json({ error: 'Outfit not found' });
     if (!outfit.isAvailable) return res.status(400).json({ error: 'Outfit is not available' });
 
     const start = new Date(startDate);
     const end = new Date(endDate);
+    if (isNaN(start) || isNaN(end) || end <= start) {
+      return res.status(400).json({ error: 'Invalid dates' });
+    }
+
     const totalDays = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
     const totalPrice = totalDays * outfit.pricePerDay;
     const depositAmount = outfit.securityDeposit;
 
-    // Use a transaction since we are updating multiple tables
-    const [booking] = await prisma.$transaction([
-      // 1. Create booking
-      prisma.booking.create({
-        data: {
-          outfitId,
-          renterId: req.userId,
-          ownerId: outfit.ownerId,
-          startDate: start,
-          endDate: end,
-          totalDays,
-          totalPrice,
-          depositAmount,
-          status: 'confirmed'
-        },
-        include: {
-          outfit: { select: { title: true, images: true, pricePerDay: true } },
-          renter: { select: { name: true } },
-          owner: { select: { name: true } }
-        }
-      }),
-      // 2. Update outfit availability
-      prisma.outfit.update({
-        where: { id: outfitId },
-        data: { isAvailable: false, totalRentals: { increment: 1 } }
-      }),
-      // 3. Update owner earnings
-      prisma.user.update({
-        where: { id: outfit.ownerId },
-        data: { totalEarnings: { increment: totalPrice }, totalRentals: { increment: 1 }, textileWasteSaved: { increment: 0.8 } }
-      }),
-      // 4. Update renter stats
-      prisma.user.update({
-        where: { id: req.userId },
-        data: { totalRentals: { increment: 1 }, textileWasteSaved: { increment: 0.8 } }
-      })
-    ]);
-
-    res.status(201).json({ 
-      message: 'Outfit booked successfully! 🎉', 
-      booking
+    const booking = db.bookings.create({
+      outfitId,
+      renterId: req.userId,
+      ownerId: outfit.ownerId,
+      startDate: start.toISOString(),
+      endDate: end.toISOString(),
+      totalDays,
+      totalPrice,
+      depositAmount,
+      status: 'confirmed'
     });
+
+    // Update outfit availability (in-memory)
+    db.outfits.update(outfitId, { isAvailable: false, totalRentals: (outfit.totalRentals || 0) + 1 });
+
+    // Update owner stats
+    const owner = db.users.findById(outfit.ownerId);
+    if (owner) {
+      db.users.update(owner.id, {
+        totalEarnings: (owner.totalEarnings || 0) + totalPrice,
+        totalRentals: (owner.totalRentals || 0) + 1,
+        textileWasteSaved: Number(((owner.textileWasteSaved || 0) + 0.8).toFixed(1))
+      });
+    }
+
+    // Update renter stats
+    const renter = db.users.findById(req.userId);
+    if (renter) {
+      db.users.update(req.userId, {
+        totalRentals: (renter.totalRentals || 0) + 1,
+        textileWasteSaved: Number(((renter.textileWasteSaved || 0) + 0.8).toFixed(1))
+      });
+    }
+
+    res.status(201).json({ message: 'Outfit booked successfully! 🎉', booking });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get user's bookings (as renter)
-router.get('/my-rentals', auth, async (req, res) => {
+// ─── GET /api/bookings/my-rentals ─────────────────────────────────────────────
+router.get('/my-rentals', auth, (req, res) => {
   try {
-    const bookings = await prisma.booking.findMany({
-      where: { renterId: req.userId },
-      include: {
-        outfit: { select: { id: true, title: true, images: true, pricePerDay: true, category: true } },
-        owner: { select: { name: true, avatar: true } }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
-    
-    // Parse images array
-    const formattedBookings = bookings.map(b => ({
-      ...b,
-      outfit: { ...b.outfit, images: JSON.parse(b.outfit.images || "[]") }
-    }));
-    
-    res.json(formattedBookings);
+    const list = db.bookings.findByRenter(req.userId);
+    res.json(list);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get bookings for user's outfits (as owner)
-router.get('/my-listings', auth, async (req, res) => {
+// ─── GET /api/bookings/my-listings ────────────────────────────────────────────
+router.get('/my-listings', auth, (req, res) => {
   try {
-    const bookings = await prisma.booking.findMany({
-      where: { ownerId: req.userId },
-      include: {
-        outfit: { select: { title: true, images: true, pricePerDay: true } },
-        renter: { select: { name: true, avatar: true } }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
-
-    const formattedBookings = bookings.map(b => ({
-      ...b,
-      outfit: { ...b.outfit, images: JSON.parse(b.outfit.images || "[]") }
-    }));
-    
-    res.json(formattedBookings);
+    const list = db.bookings.findByOwner(req.userId);
+    res.json(list);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Cancel booking
-router.put('/:id/cancel', auth, async (req, res) => {
+// ─── PUT /api/bookings/:id/cancel ─────────────────────────────────────────────
+router.put('/:id/cancel', auth, (req, res) => {
   try {
-    const booking = await prisma.booking.findFirst({
-      where: { 
-        id: req.params.id, 
-        renterId: req.userId,
-        status: { in: ['pending', 'confirmed'] }
-      }
-    });
+    const booking = db.bookings.findById(req.params.id);
 
-    if (!booking) return res.status(404).json({ error: 'Booking not found or cannot be cancelled' });
+    if (!booking || booking.renterId !== req.userId || !['pending', 'confirmed'].includes(booking.status)) {
+      return res.status(404).json({ error: 'Booking not found or cannot be cancelled' });
+    }
 
-    await prisma.$transaction([
-      prisma.booking.update({
-        where: { id: booking.id },
-        data: { status: 'cancelled' }
-      }),
-      prisma.outfit.update({
-        where: { id: booking.outfitId },
-        data: { isAvailable: true }
-      })
-    ]);
+    db.bookings.update(booking.id, { status: 'cancelled' });
+    db.outfits.update(booking.outfitId, { isAvailable: true });
 
     res.json({ message: 'Booking cancelled' });
   } catch (error) {
