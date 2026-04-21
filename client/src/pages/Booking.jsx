@@ -117,7 +117,7 @@ export default function Booking() {
 
         {/* Date Selection */}
         <h3 className="heading-sm mb-md animate-fade-in delay-100">Select Dates</h3>
-        <div className="grid grid-cols-2 gap-md mb-xl animate-fade-in delay-100">
+        <div className="grid grid-cols-2 gap-md mb-xl animate-fade-in delay-100 booking-date-grid">
           <div className="input-group">
             <label>Start Date</label>
             <div className="relative">

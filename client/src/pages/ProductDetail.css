@@ -4,7 +4,7 @@
 
 .fixed-top-nav {
   position: fixed;
-  top: 92px;
+  top: var(--navbar-height);
   left: 0;
   right: 0;
   max-width: 1180px;
@@ -131,7 +131,7 @@
 
 @media (max-width: 760px) {
   .fixed-top-nav {
-    top: 122px;
+    top: var(--navbar-height-mobile);
   }
 
   .hero-image-container {
@@ -144,5 +144,18 @@
     right: 12px;
     bottom: 12px;
     padding: 9px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-action-bar {
+    height: auto;
+    padding: 10px var(--space-md);
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .bottom-action-bar .btn {
+    padding: 12px 16px;
+    font-size: 0.9rem;
   }
 }

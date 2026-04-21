@@ -7,7 +7,7 @@
 }
 
 .chat-header {
-  top: 72px;
+  top: var(--navbar-height);
   background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(8px);
 }
@@ -130,7 +130,7 @@
 
 @media (max-width: 760px) {
   .chat-header {
-    top: 108px;
+    top: var(--navbar-height-mobile);
   }
 
   .chat-header-inner {
@@ -140,5 +140,16 @@
   .chat-outfit-thumb {
     width: 40px;
     height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-input-inner {
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .chat-message-input {
+    font-size: 0.9rem;
   }
 }

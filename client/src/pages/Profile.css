@@ -66,6 +66,7 @@
 }
 
 .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-2-col { display: grid; grid-template-columns: repeat(2, 1fr); }
 .col-span-2 { grid-column: span 2; }
 .h-40 { height: 160px; }
 .h-32 { height: 128px; }
@@ -75,5 +76,23 @@
 @media (max-width: 760px) {
   .profile-topbar {
     padding-top: 6px;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .profile-stats > div {
+    padding: 6px 4px;
+  }
+
+  .profile-stats .heading-sm {
+    font-size: 1rem;
+  }
+
+  .profile-user-card {
+    gap: 12px;
   }
 }

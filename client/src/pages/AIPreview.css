@@ -30,3 +30,18 @@
 .left-md { left: var(--space-md); }
 .right-md { right: var(--space-md); }
 .h-\[400px\] { height: 400px; }
+
+@media (max-width: 768px) {
+  .h-\[400px\] {
+    height: 280px;
+  }
+
+  .h-80 {
+    height: 220px;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}

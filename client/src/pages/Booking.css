@@ -118,3 +118,18 @@
     height: 98px;
   }
 }
+
+@media (max-width: 480px) {
+  .booking-shell {
+    padding: 0 12px;
+  }
+
+  /* Stack date pickers vertically on small phones */
+  .booking-date-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .booking-summary-title {
+    font-size: 0.9rem;
+  }
+}
