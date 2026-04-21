@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('test@rewear.com');
-  const [password, setPassword] = useState('test@123');
+  const [email, setEmail] = useState('demo@rewear.com');
+  const [password, setPassword] = useState('demo123');
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function Login() {
     } catch (err) {
       const apiError = err.response?.data?.error;
       const networkError = !err.response;
-      setError(apiError || (networkError ? 'Cannot reach server. Please make sure backend is running on localhost:5000.' : 'Login failed'));
+      setError(apiError || (networkError ? 'Cannot reach server. The backend may be waking up — please wait 30 seconds and try again.' : 'Login failed'));
     }
   };
 
@@ -63,7 +63,7 @@ export default function Login() {
           Don't have an account? <Link to="/register" className="text-purple ml-1">Create one</Link>
         </p>
 
-        <p className="demo-hint">Test login prefilled: <strong>test@rewear.com</strong> / <strong>test@123</strong></p>
+        <p className="demo-hint">Test login prefilled: <strong>demo@rewear.com</strong> / <strong>demo123</strong></p>
       </div>
     </div>
   );
