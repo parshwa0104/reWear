@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('rewear_token'));
+  const [token, setToken] = useState(localStorage.getItem('closet_collective_token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const res = await api.post('/users/login', { email, password });
     const { token: newToken, user: userData } = res.data;
-    localStorage.setItem('rewear_token', newToken);
+    localStorage.setItem('closet_collective_token', newToken);
     api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
     setToken(newToken);
     setUser(userData);
@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
   const register = async (name, email, password, location) => {
     const res = await api.post('/users/register', { name, email, password, location });
     const { token: newToken, user: userData } = res.data;
-    localStorage.setItem('rewear_token', newToken);
+    localStorage.setItem('closet_collective_token', newToken);
     api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
     setToken(newToken);
     setUser(userData);
@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('rewear_token');
+    localStorage.removeItem('closet_collective_token');
     delete api.defaults.headers.common['Authorization'];
     setToken(null);
     setUser(null);

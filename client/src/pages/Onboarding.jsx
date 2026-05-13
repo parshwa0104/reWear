@@ -37,7 +37,7 @@ export default function Onboarding() {
   };
 
   const finishOnboarding = () => {
-    localStorage.setItem('rewear_onboarded', 'true');
+    localStorage.setItem('closet_collective_onboarded', 'true');
     navigate('/register');
   };
 

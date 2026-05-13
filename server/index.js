@@ -40,14 +40,14 @@ app.use('/api/messages', require('./routes/messages'));
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', app: 'ReWear API (in-memory)', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', app: 'Closet Collective API (in-memory)', timestamp: new Date().toISOString() });
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`🚀 ReWear API running on http://localhost:${PORT} 🌿`);
+  console.log(`🚀 Closet Collective API running on http://localhost:${PORT} 🌿`);
   console.log(`📦 Using in-memory store — no database required`);
-  console.log(`🔑 Test login: demo@rewear.com / demo123`);
+  console.log(`🔑 Test login: demo@closetcollective.com / demo123`);
 });
 
 module.exports = app;

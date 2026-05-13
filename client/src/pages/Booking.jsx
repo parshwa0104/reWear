@@ -88,7 +88,7 @@ export default function Booking() {
   }
 
   const outfitImages = parseImages(outfit.images);
-  const outfitImage = outfitImages[0] || 'https://via.placeholder.com/220x280?text=ReWear';
+  const outfitImage = outfitImages[0] || '/placeholder.jpg';
 
   return (
     <div className="page bg-primary min-h-screen booking-page">

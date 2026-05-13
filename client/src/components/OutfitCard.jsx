@@ -31,7 +31,7 @@ export default function OutfitCard({ outfit }) {
       </div>
       
       <div className="outfit-content">
-        <p className="outfit-brand">{outfit.brand || 'Styled by ReWear'}</p>
+        <p className="outfit-brand">{outfit.brand || 'Styled by Closet Collective'}</p>
 
         <div className="outfit-header">
           <h3 className="body-md font-semibold truncate">{outfit.title}</h3>

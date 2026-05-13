@@ -52,10 +52,10 @@ export default function Profile() {
         const maybeImages = JSON.parse(item.images);
         if (Array.isArray(maybeImages) && maybeImages.length > 0) return maybeImages[0];
       } catch {
-        return 'https://via.placeholder.com/300x360?text=ReWear';
+        return '/placeholder.jpg';
       }
     }
-    return 'https://via.placeholder.com/300x360?text=ReWear';
+    return '/placeholder.jpg';
   };
 
   return (

@@ -6,10 +6,10 @@ export default function Navbar() {
   return (
     <nav className="navbar glass-nav">
       <div className="nav-container">
-        <NavLink to="/home" className="brand-block" aria-label="ReWear home">
+        <NavLink to="/home" className="brand-block" aria-label="Closet Collective home">
           <span className="brand-dot" />
           <div>
-            <p className="brand-name">ReWear</p>
+            <p className="brand-name">Closet Collective</p>
             <span className="brand-sub">Rent • Style • Repeat</span>
           </div>
         </NavLink>

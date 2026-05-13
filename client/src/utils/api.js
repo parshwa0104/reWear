@@ -11,7 +11,7 @@ const api = axios.create({
 });
 
 // Attach token from localStorage on init
-const token = localStorage.getItem('rewear_token');
+const token = localStorage.getItem('closet_collective_token');
 if (token) {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
@@ -21,7 +21,7 @@ api.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('rewear_token');
+      localStorage.removeItem('closet_collective_token');
       // Only redirect if not already on auth pages
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
         window.location.href = '/login';

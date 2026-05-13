@@ -115,7 +115,7 @@ export default function Chat() {
           {outfit && (
             <button className="chat-outfit-meta" onClick={() => navigate(`/outfit/${outfit.id}`)}>
               <img
-                src={parseImages(outfit.images)[0] || 'https://via.placeholder.com/150?text=ReWear'}
+                src={parseImages(outfit.images)[0] || '/placeholder.jpg'}
                 className="chat-outfit-thumb"
               />
               <div className="chat-outfit-text">

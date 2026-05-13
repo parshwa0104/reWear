@@ -3,7 +3,7 @@
  * All data lives in RAM. Resets on restart. Perfect for demo/portfolio use.
  *
  * Test Account:
- *   Email:    demo@rewear.com
+ *   Email:    demo@closetcollective.com
  *   Password: demo123
  */
 
@@ -21,7 +21,7 @@ const _users = [
   {
     id: 'user-demo-1',
     name: 'Priya Sharma',
-    email: 'demo@rewear.com',
+    email: 'demo@closetcollective.com',
     password: DEMO_HASH,
     avatar: '',
     location: 'Mumbai, India',
@@ -36,7 +36,7 @@ const _users = [
   {
     id: 'user-demo-2',
     name: 'Arjun Patel',
-    email: 'arjun@rewear.com',
+    email: 'arjun@closetcollective.com',
     password: DEMO_HASH,
     avatar: '',
     location: 'Delhi, India',

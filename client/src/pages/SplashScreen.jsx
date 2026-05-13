@@ -9,8 +9,8 @@ export default function SplashScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
       // Check auth status here in a real app, for now go to onboarding
-      const hasSeenOnboarding = localStorage.getItem('rewear_onboarded');
-      const token = localStorage.getItem('rewear_token');
+      const hasSeenOnboarding = localStorage.getItem('closet_collective_onboarded');
+      const token = localStorage.getItem('closet_collective_token');
       
       if (token) {
         navigate('/home', { replace: true });
@@ -30,7 +30,7 @@ export default function SplashScreen() {
         <div className="logo-container">
           <Leaf className="logo-icon animate-float text-green" />
         </div>
-        <h1 className="heading-xl mt-4">ReWear</h1>
+        <h1 className="heading-xl mt-4">Closet Collective</h1>
         <p className="tagline body-md text-muted animate-fade-in delay-500 mt-2">
           Wear More. Waste Less.
         </p>

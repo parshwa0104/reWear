@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('demo@rewear.com');
+  const [email, setEmail] = useState('demo@closetcollective.com');
   const [password, setPassword] = useState('demo123');
   const [error, setError] = useState('');
   const { login } = useAuth();
@@ -26,7 +26,7 @@ export default function Login() {
     <div className="auth-page">
       <div className="auth-card animate-fade-in-up">
         <p className="auth-chip">WELCOME BACK</p>
-        <h2 className="heading-lg mb-sm">Sign in to your ReWear account</h2>
+        <h2 className="heading-lg mb-sm">Sign in to your Closet Collective account</h2>
         <p className="text-secondary mb-xl">Ethnic elegance, rented smarter.</p>
 
         {error && <div className="auth-error">{error}</div>}
@@ -63,7 +63,7 @@ export default function Login() {
           Don't have an account? <Link to="/register" className="text-purple ml-1">Create one</Link>
         </p>
 
-        <p className="demo-hint">Test login prefilled: <strong>demo@rewear.com</strong> / <strong>demo123</strong></p>
+        <p className="demo-hint">Test login prefilled: <strong>demo@closetcollective.com</strong> / <strong>demo123</strong></p>
       </div>
     </div>
   );

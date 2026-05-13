@@ -33,7 +33,7 @@ export default function AIPreview() {
         <div className="text-center mb-xl animate-fade-in-down">
           <div className="inline-flex items-center gap-xs px-3 py-1 rounded-full bg-purple/10 text-purple text-xs font-bold mb-sm border border-purple/20">
             <Sparkles className="w-3 h-3" />
-            Powered by ReWear AI
+            Powered by Closet Collective AI
           </div>
           <h1 className="heading-md mb-2">Virtual Fitting Room</h1>
           <p className="text-sm text-secondary px-lg">See how this outfit looks on you before renting.</p>

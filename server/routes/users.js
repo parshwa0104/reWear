@@ -32,7 +32,7 @@ router.post('/register', async (req, res) => {
       totalRentals: 0
     });
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'rewear-secret-key', { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'closet-collective-secret-key', { expiresIn: '7d' });
 
     res.status(201).json({
       message: 'Account created successfully!',
@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'rewear-secret-key', { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'closet-collective-secret-key', { expiresIn: '7d' });
 
     res.json({
       message: 'Login successful!',

@@ -1,7 +1,7 @@
 {
-  "name": "rewear-server",
+  "name": "closet-collective-server",
   "version": "1.0.0",
-  "description": "ReWear fashion rental API — in-memory store, no database",
+  "description": "Closet Collective fashion rental API — in-memory store, no database",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
