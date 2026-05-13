@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Share2, ShieldCheck, MapPin } from 'lucide-react';
+import { ChevronLeft, Share2, ShieldCheck, MapPin, X } from 'lucide-react';
 import api from '../utils/api';
 import OwnerMiniCard from '../components/OwnerMiniCard';
 import ReviewCard from '../components/ReviewCard';
@@ -13,6 +13,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const [outfit, setOutfit] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const fetchOutfit = async () => {
@@ -70,7 +71,7 @@ export default function ProductDetail() {
       </div>
 
       {/* Hero Image */}
-      <div className="hero-image-container mb-md">
+      <div className="hero-image-container mb-md" onClick={() => setIsFullscreen(true)}>
         <img src={imageUrl} alt={outfit.title} className="hero-image" />
         <div className="hero-gradient"></div>
         <div className="price-tag-large animate-slide-up">
@@ -151,6 +152,15 @@ export default function ProductDetail() {
           </button>
         </div>
       </div>
+
+      {isFullscreen && (
+        <div className="image-modal" onClick={() => setIsFullscreen(false)}>
+          <button className="image-modal-close" onClick={() => setIsFullscreen(false)}>
+            <X className="w-6 h-6" />
+          </button>
+          <img src={imageUrl} alt={outfit.title} className="image-modal-content" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
     </div>
   );
 }
